@@ -1,15 +1,27 @@
 package internetbanking;
 
+import java.util.Map;
+
+
 public class CheckOperation 
 {
-	Login logCall = new Login();
-	OpenAccount accountCall = new OpenAccount();
 	Cache cacheCall = new Cache();
 
-public void checkLogin(String userId,String password)
+	
+	
+public String checkLogin(long userId,String password,Map<Long,OpenAccount> open)
 {
- 	cacheCall.login.put(userId,password);
- 	
+	
+	OpenAccount userIdMap = open.get(userId);
+ 	if(userIdMap.getPhoneNumber() == userId && userIdMap.getPassword().equals(password) && userIdMap.isRole() == false)
+ 	{
+ 		return "user";
+ 	}
+ 	else if(userIdMap.getPhoneNumber() == userId && userIdMap.getPassword().equals(password) && userIdMap.isRole() == true)
+ 	{
+ 		return "admin";
+ 	}
+return "wrong"; 	
 }
 
 }
