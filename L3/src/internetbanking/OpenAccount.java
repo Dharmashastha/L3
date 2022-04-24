@@ -49,7 +49,7 @@ public class OpenAccount
 	@Override
 	public String toString() {
 		return "OpenAccount [name=" + name + ", phoneNumber=" + phoneNumber + ", eMail=" + eMail + ", accountId="
-				+ accountId + ", password=" + password + ", role=" + role + "]";
+				+ accountId + ", password=" + password + "]";
 	}
 	
 	

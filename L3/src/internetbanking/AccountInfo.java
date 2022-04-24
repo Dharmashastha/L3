@@ -40,5 +40,11 @@ public class AccountInfo
 		this.customerId = customerId;
 	}
 	
+	@Override
+	public String toString() {
+		return "AccountInfo [accountId=" + accountId + ", accountType=" + accountType + ", balance=" + balance
+				+ ", branch=" + branch + ", customerId=" + customerId + "]";
+	}
+	
 	
 }

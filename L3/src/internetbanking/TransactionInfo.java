@@ -5,7 +5,7 @@ public class TransactionInfo
 	private long transactionId;
 	private long fromAccount;
 	private long toAccount;
-	private String dateAndTime;
+	private Object dateAndTime;
 	private double amount;
 	private char transactionType;
 	
@@ -27,10 +27,10 @@ public class TransactionInfo
 	public void setToAccount(long toAccount) {
 		this.toAccount = toAccount;
 	}
-	public String getDateAndTime() {
+	public Object getDateAndTime() {
 		return dateAndTime;
 	}
-	public void setDateAndTime(String dateAndTime) {
+	public void setDateAndTime(Object dateAndTime) {
 		this.dateAndTime = dateAndTime;
 	}
 	public double getAmount() {
@@ -46,12 +46,15 @@ public class TransactionInfo
 		this.transactionType = transactionType;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "TransactionInfo [transactionId=" + transactionId + ", fromAccount=" + fromAccount + ", toAccount="
 				+ toAccount + ", dateAndTime=" + dateAndTime + ", amount=" + amount + ", transactionType="
 				+ transactionType + "]";
 	}
+	
+	
 	
 	
 }

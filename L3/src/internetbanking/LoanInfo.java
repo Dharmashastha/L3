@@ -2,24 +2,13 @@ package internetbanking;
 
 public class LoanInfo 
 {
-	private String name;
-	private String Address; 
 	private String loanType;
 	private double loanAmount;
-	private int aadharId;
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getAddress() {
-		return Address;
-	}
-	public void setAddress(String address) {
-		Address = address;
-	}
+	private long loanId;
+	private long aadharCard;
+	private String processingStatus = "pending";
+	private boolean approve = false;
+
 	public String getLoanType() {
 		return loanType;
 	}
@@ -32,10 +21,34 @@ public class LoanInfo
 	public void setLoanAmount(double loanAmount) {
 		this.loanAmount = loanAmount;
 	}
-	public int getAadharId() {
-		return aadharId;
+	public long getLoanId() {
+		return loanId;
 	}
-	public void setAadharId(int aadharId) {
-		this.aadharId = aadharId;
+	public void setLoanId(long loanId) {
+		this.loanId = loanId;
+	}
+	public long getAadharCard() {
+		return aadharCard;
+	}
+	public void setAadharCard(long aadharCard) {
+		this.aadharCard = aadharCard;
+	}
+	public String getProcessingStatus() {
+		return processingStatus;
+	}
+	public void setProcessingStatus(String processingStatus) {
+		this.processingStatus = processingStatus;
+	}
+	public boolean isApprove() {
+		return approve;
+	}
+	public void setApprove(boolean approve) {
+		this.approve = approve;
+	}
+	
+	@Override
+	public String toString() {
+		return "Loan [loanType=" + loanType + ", loanAmount=" + loanAmount + ", loanId=" + loanId + ", aadharCard="
+				+ aadharCard + ", processingStatus=" + processingStatus + ", approve=" + approve + "]";
 	}
 }

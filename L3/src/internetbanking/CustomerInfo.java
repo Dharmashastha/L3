@@ -39,4 +39,10 @@ public class CustomerInfo
 		this.customerId = customerId;
 	}
 	
+	@Override
+	public String toString() {
+		return "CustomerInfo [name=" + name + ", eMailId=" + eMailId + ", phoneNumber=" + phoneNumber + ", Address="
+				+ Address + ", customerId=" + customerId + "]";
+	}
+	
 }

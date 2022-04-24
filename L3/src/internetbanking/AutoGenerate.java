@@ -8,6 +8,8 @@ public class AutoGenerate
 		static public long customerId=100000;
 		static public long accountId=20000;
 		static public long transactionId=1000;
+		static public long loanId = 2000;
+		
 public long addNewCustomerId()
 {	
 return ++customerId;		
@@ -23,6 +25,10 @@ public static long addTransactionId()
 return ++transactionId;	
 }
 
+public long addLoanId()
+{
+return ++loanId;	
+}
 
 public double setMinBalance() throws CustomException
 {

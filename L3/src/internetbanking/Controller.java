@@ -9,7 +9,6 @@ import common.InputCenter;
 public class Controller 
 {
 	
-	CheckOperation operationCall = new CheckOperation();
 	BankOperation bankCall = new BankOperation();
 	AutoGenerate autoCall = new AutoGenerate();
 	Map<Long,OpenAccount> openAccount = new HashMap<>();
@@ -58,20 +57,22 @@ public void existingUser() throws CustomException
 	long userId = inputCall.getLong();
 	System.out.println("Enter the Password");
 	String password = inputCall.getString();
-	String check = operationCall.checkLogin(userId, password, openAccount);
+	String check = bankCall.checkLogin(userId, password, openAccount);
+	LoanInfo loanCall = new LoanInfo();
 	if(check.equals("user"))
 	{
 		System.out.println("Login Successful");
-		System.out.println("-----------0.Logout--------------------");
-		System.out.println("-----------1.Balance Enquiry-----------");
-		System.out.println("-----------2.Add New Account-----------");
-		System.out.println("-----------3.Account History-----------");
-		System.out.println("-----------4.Apply for Loan------------");
-		System.out.println("-----------5.Money Transfer------------");
 		OpenAccount accountCall = openAccount.get(userId);
 		boolean flag = false;
 		while(!flag)
 		{
+			System.out.println("-----------0.Logout--------------------");
+			System.out.println("-----------1.Balance Enquiry-----------");
+			System.out.println("-----------2.Add New Account-----------");
+			System.out.println("-----------3.Account History-----------");
+			System.out.println("-----------4.Apply for Loan------------");
+			System.out.println("-----------5.Money Transfer------------");
+			System.out.println("Enter Your Choice");
 			int choice = inputCall.getChoice();
 			switch(choice)
 			{
@@ -98,7 +99,8 @@ public void existingUser() throws CustomException
 				}
 				case 4:
 				{
-					
+					loanDetails(loanCall);
+					bankCall.addLoanDetails(accountCall.getAccountId(), loanCall);
 					break;
 				}
 				case 5:
@@ -124,15 +126,16 @@ public void existingUser() throws CustomException
 	else if(check.equals("admin"))
 	{
 		System.out.println("-----------Welcome Admin---------------");
-		System.out.println("-----------0.Logout--------------------");
-		System.out.println("-----------1.Balance Enquiry-----------");
-		System.out.println("-----------2.Add NetBank Account-------");
-		System.out.println("-----------3.Account History-----------");
-		System.out.println("-----------4.Check for Loan------------");
-		System.out.println("-----------5.Money Transfer------------");
 		boolean flag = false;
 		while(!flag)
 		{
+			System.out.println("-----------0.Logout--------------------");
+			System.out.println("-----------1.Balance Enquiry-----------");
+			System.out.println("-----------2.Add NetBank Account-------");
+			System.out.println("-----------3.Account History-----------");
+			System.out.println("-----------4.Check for Loan------------");
+			System.out.println("-----------5.Money Transfer------------");
+			System.out.println("Enter Your Choice");
 			int choice = inputCall.getChoice();
 			switch(choice)
 			{
@@ -143,7 +146,8 @@ public void existingUser() throws CustomException
 				}
 				case 1:
 				{
-					
+					System.out.println("Enter Your AccountNumber");
+					System.out.println(bankCall.getBalance(inputCall.getLong()));
 					break;
 				}
 				case 2:
@@ -154,17 +158,35 @@ public void existingUser() throws CustomException
 				}
 				case 3:
 				{
-					
+					System.out.println("Enter Your AccountNumber");
+					long accountId = inputCall.getLong();
+					System.out.println(bankCall.showAccountDetails(accountId));
+					System.out.println(bankCall.showTransactionDetails(accountId));
 					break;
 				}
 				case 4:
 				{
-					
+					System.out.println(bankCall.showApplayLoanDetails());
+					System.out.println(bankCall.approve(inputCall.getLong()));
 					break;
 				}
 				case 5:
 				{
-					
+					System.out.println("Enter Your fromAccountNumber");
+					long fromAccId = inputCall.getLong();
+					System.out.println("Enter Your ToAccountNumber");
+					long toAccId = inputCall.getLong();
+					System.out.println("Enter Your Amount");
+					double amount = inputCall.getDouble();
+					boolean checking = bankCall.moneyTransfer(fromAccId, toAccId, amount);
+					if(checking)
+					{
+						System.out.println("Transaction Successful");
+					}
+					else
+					{
+						System.out.println("Transaction Failed");
+					}
 					break;
 				}
 			}
@@ -175,6 +197,18 @@ public void existingUser() throws CustomException
 		System.out.println("UserId & Password Incorrected");
 	}
 }
+
+public void loanDetails(LoanInfo loanCall)
+{
+	System.out.println("Enter Your LoanType");
+	loanCall.setLoanType(inputCall.getString());
+	System.out.println("Enter Your Amount");
+	loanCall.setLoanAmount(inputCall.getDouble());
+	loanCall.setLoanId(autoCall.addLoanId());
+	System.out.println("Enter Your AadharCard");
+	loanCall.setAadharCard(inputCall.getLong());
+}
+
 
 public void newUser(OpenAccount accountCall)
 {
@@ -224,12 +258,19 @@ public void netBankingAccount() throws CustomException
 	public static void main(String[] args) 
 	{
 		InputCenter inputCall = new InputCenter();
-
-		
-		
+		Controller control = new Controller();
+		DummyValues dummyCall = new DummyValues();
+		try {
+			dummyCall.dummyValues();
+		} catch (CustomException e) {
+			e.printStackTrace();
+		}
 		boolean flag = false;
 		while(!flag)
 		{
+			
+			System.out.println("------------1.New Bank Account------------");
+			System.out.println("------------2.Net Banking-----------------");
 			System.out.println("Enter Your Choice");
 			int select = inputCall.getChoice();
 		switch(select)
@@ -245,11 +286,19 @@ public void netBankingAccount() throws CustomException
 				String check=inputCall.getString();
 				if(check.contains("Yes"))
 				{
-					
+					try {
+						control.accountDetails();
+					} catch (CustomException e) {
+						e.printStackTrace();
+					}
 				}		
 				else if(check.contains("No"))
 				{
-					
+					try {
+						control.customerDetails();
+					} catch (CustomException e) {
+						e.printStackTrace();
+					}
 				}
 				else
 				{
@@ -259,29 +308,13 @@ public void netBankingAccount() throws CustomException
 			}
 			case 2:
 			{
-				
+				try {
+					control.netBankingAccount();
+				} catch (CustomException e) {
+					e.printStackTrace();
+				}
 				break;
-			}
-			
-			case 3:
-			{
-				
-				break;
-			}
-			
-			case 4:
-			{
-				
-				break;
-			}
-			
-			case 5:
-			{
-				
-				break;
-			}
-			
-			
+			}			
 		}
 		}
 				
