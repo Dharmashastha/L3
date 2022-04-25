@@ -3,8 +3,6 @@ package parkinglot;
 public class ParkingInfo 
 {
 	private int nofFloors;
-	private String timeFee;
-	private int availableSpace;
 	private int avaiSpaceFloor;
 	
 	public int getNofFloors() {
@@ -12,18 +10,6 @@ public class ParkingInfo
 	}
 	public void setNofFloors(int nofFloors) {
 		this.nofFloors = nofFloors;
-	}
-	public String getTimeFee() {
-		return timeFee;
-	}
-	public void setTimeFee(String timeFee) {
-		this.timeFee = timeFee;
-	}
-	public int getAvailableSpace() {
-		return availableSpace;
-	}
-	public void setAvailableSpace(int availableSpace) {
-		this.availableSpace = availableSpace;
 	}
 	public int getAvaiSpaceFloor() {
 		return avaiSpaceFloor;
@@ -34,8 +20,7 @@ public class ParkingInfo
 	
 	@Override
 	public String toString() {
-		return "ParkingInfo [nofFloors=" + nofFloors + ", timeFee=" + timeFee + ", availableSpace=" + availableSpace
-				+ ", avaiSpaceFloor=" + avaiSpaceFloor + "]";
+		return "ParkingInfo [nofFloors=" + nofFloors + ", avaiSpaceFloor=" + avaiSpaceFloor + "]";
 	}
 	
 	

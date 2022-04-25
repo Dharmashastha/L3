@@ -10,6 +10,7 @@ public class VehicleInfo
 	private double getPay;
 	private long tokenNumber;
 	private boolean amountStatus;
+	private int floor;
 	
 	public String getVehicleNumber() {
 		return vehicleNumber;
@@ -53,16 +54,16 @@ public class VehicleInfo
 	public void setAmountStatus(boolean amountStatus) {
 		this.amountStatus = amountStatus;
 	}
-	
+	public int getFloor() {
+		return floor;
+	}
+	public void setFloor(int floor) {
+		this.floor = floor;
+	}
 	@Override
 	public String toString() {
 		return "VehicleInfo [vehicleNumber=" + vehicleNumber + ", vehicleType=" + vehicleType + ", entryOrExit="
 				+ entryOrExit + ", timeLimit=" + timeLimit + ", getPay=" + getPay + ", tokenNumber=" + tokenNumber
-				+ ", amountStatus=" + amountStatus + "]";
+				+ ", amountStatus=" + amountStatus + ", floor=" + floor + "]";
 	}
-	
-	
-	
-	
-	
 }
