@@ -12,10 +12,7 @@ import common.CustomException;
 public class ParkingOperation {
 	Map<Long, TokenDetails> tokenMap = new HashMap<>();
 	Map<Integer, Map<String, List<Spot>>> emptySpot = new HashMap<>();
-	Map<Integer, Map<String, List<Spot>>> occupiedSpot = new HashMap<>();
-
-//	List<Spot> emptySpot = new ArrayList<>();
-//	List<Spot> occupiedSpot = new ArrayList<>();
+	Map<Long, Spot> occupiedSpot = new HashMap<>();
 	Map<Long, CustomerInfo> cusMap = new HashMap<>();
 
 	private long tokenNumber = 10000;
@@ -40,7 +37,8 @@ public class ParkingOperation {
 		tokenMap.put(tokenNumber, tokenCall);
 	}
 
-	public TokenDetails showTokenDetails(long tokenNumber) {
+	public TokenDetails showTokenDetails(long tokenNumber) throws CustomException {
+		checkTokenNumberNumber(tokenNumber);
 		TokenDetails tokenCall = tokenMap.get(tokenNumber);
 		return tokenCall;
 	}
@@ -49,16 +47,49 @@ public class ParkingOperation {
 		nullCheckObject(cusCall);
 		cusMap.put(portalId, cusCall);
 	}
-
+	
+	public void checkPortalId(long portalId) throws CustomException
+	{
+		CustomerInfo cusCall = cusMap.get(portalId);
+		if(cusCall == null)
+		{
+			throw new  CustomException("portalId Invalid");
+		}
+	}
+	
+	public void checkTokenNumberNumber(long tokenNumber) throws CustomException
+	{
+		TokenDetails tokenCall = tokenMap.get(tokenNumber);
+		if(tokenCall == null)
+		{
+			throw new  CustomException("tokenNumber Invalid");
+		}
+	}
+	
 	public double getWallet(long portalId) {
 		CustomerInfo cusCall = cusMap.get(portalId);
 		return cusCall.getWallet();
 	}
+	
+	public void setWallet(long portalId,double wallet) {
+		CustomerInfo cusCall = cusMap.get(portalId);
+		cusCall.setWallet(wallet);
+	}
+
+	public CustomerInfo showPortalDetails(long portalId) throws CustomException {
+		checkPortalId(portalId);
+		CustomerInfo cusCall = cusMap.get(portalId);
+		return cusCall;
+	}
 
 	public void addSpotDetails(int floor, int spot, String vehicleType, Spot spotCall, boolean chargePort) {
-		Map<String, List<Spot>> newEmpty = new HashMap<>();
-		List<Spot> spotList = new ArrayList<>();
-		for (int i = 0; i < floor; i++) {
+
+		for (int i = 1; i <= floor; i++) {
+			Map<String, List<Spot>> newEmpty = emptySpot.get(i);
+			if (newEmpty == null) {
+				newEmpty = new HashMap<String, List<Spot>>();
+			}
+			List<Spot> spotList = new ArrayList<>();
 			for (int j = 1; j <= spot; j++) {
 				spotCall = new Spot();
 				spotCall.setSpot(j);
@@ -72,22 +103,38 @@ public class ParkingOperation {
 		}
 	}
 
-	public String getSpot(int floor, String vehicleType) {
-		Map<String, List<Spot>> dummyMap = emptySpot.get(floor);
-		List<Spot> spotList = dummyMap.get(vehicleType);
-		String saved = "";
-		Spot spotCall;
-		for (int i = 0; i < spotList.size(); i++) {
-			spotCall = spotList.get(i);
-			saved += spotCall + "\n";
-		}
-		return saved;
-	}
+//	public String getSpot(int floor, String vehicleType) {
+//		Map<String, List<Spot>> dummyMap = emptySpot.get(floor);
+//		List<Spot> spotList = dummyMap.get(vehicleType);
+//		String saved = "";
+//		Spot spotCall;
+//		for (int i = 0; i < spotList.size(); i++) {
+//			spotCall = spotList.get(i);
+//			saved += spotCall + "\n";
+//		}
+//		if (saved.isEmpty()) {
+//			saved = "Floor " + vehicleType + " SpotOccupied";
+//		}
+//		return saved;
+//	}
 
 	public String currentTime() {
 		SimpleDateFormat formatter = new SimpleDateFormat("HH:MM:SS");
 		Date time = new Date(System.currentTimeMillis());
 		return formatter.format(time);
+	}
+
+	public String checkVehicleNumber(String vehicleNumber) throws CustomException {
+		for (long i = tokenNumber; i < i + tokenMap.size(); i++) {
+			TokenDetails tokenCall = tokenMap.get(i - 1);
+			if (tokenCall == null) {
+				return "";
+			}
+			if (tokenCall.getVehicleNumber().equals(vehicleNumber)) {
+				throw new  CustomException("Already Parked");
+			}
+		}
+		return "";
 	}
 
 //	for (int i = 0; i < emptySpot.size(); i++) {
@@ -109,17 +156,53 @@ public class ParkingOperation {
 //		
 //	}
 
-	public String checkSpot(int floor, String vehicleType) {
-		Map<String, List<Spot>> dummyMap = emptySpot.get(floor);
+//	public String checkFloor(int floor, int spot,long tokenNumber) throws CustomException {
+//		TokenDetails tokenCall = tokenMap.get(tokenNumber);
+//		if(tokenCall == null)
+//		{
+//			return "We have Floor";
+//		}
+//		String vehicleType = tokenCall.getVehicleType();
+//		Spot spotCall = occupiedSpot.get(tokenNumber);
+//		if(spotCall == null)
+//		{
+//			return "We have Floor " + vehicleType;
+//		}
+//		if ((floor * spot) == spotList.size()) {
+//			throw new  CustomException("Fully " + vehicleType + " FloorOccupied");
+//		}
+//		return "We have Floor " + vehicleType;
+//	}
+
+	public String checkSpot(long tokenNumber) throws CustomException {
+		TokenDetails tokenCall = tokenMap.get(tokenNumber);
+		String vehicleType = tokenCall.getVehicleType();
+		Map<String, List<Spot>> dummyMap = emptySpot.get(tokenCall.getFloor());
+		if(dummyMap == null)
+		{
+			throw new CustomException("Floor Not Found");
+		}
 		List<Spot> spotList = dummyMap.get(vehicleType);
-		Spot SpotCall = spotList.get(0);
-		spotList.remove(0);
-		Map<String, List<Spot>> tempMap = new HashMap<>();
-		List<Spot> newList = new ArrayList<>();
-		newList.add(SpotCall);
-		tempMap.put(vehicleType, newList);
-		occupiedSpot.put(floor, tempMap);
-		return SpotCall == null ? "Fully " + vehicleType + " SpotOccupied" : "We have Spot " + vehicleType;
+		if (spotList.size() == 0) {
+			throw new  CustomException("Floor " + vehicleType + " SpotOccupied");
+		}
+		spotList.get(0).setTokenNumber(tokenNumber);
+		Spot spotCall = spotList.get(0);
+		spotList.remove(0);	
+		occupiedSpot.put(tokenNumber, spotCall);
+		return "We have Spot " + vehicleType;
+	}
+
+	public void checkExitSpot(long tokenNumber) {
+		TokenDetails tokenCall = tokenMap.get(tokenNumber);
+		Spot spotCall = occupiedSpot.get(tokenNumber);
+		Map<String, List<Spot>> tempMap = emptySpot.get(tokenCall.getFloor());
+		List<Spot> tempList = tempMap.get(tokenCall.getVehicleType());
+			if (spotCall.getTokenNumber() == tokenNumber) {
+				tempList.add(spotCall);
+				tokenMap.remove(tokenNumber);
+		}
+
 	}
 
 	public String checkAmountBalance(int difftime) {
@@ -144,205 +227,4 @@ public class ParkingOperation {
 		}
 		return wallet;
 	}
-
-//public List<VehicleType> addVehicleTypes(VehicleType typeCall)
-//{
-//	typeList.add(typeCall);
-//return typeList;	
-//}
-
-//public Object checkSpace1(String vehicleNumber,int avilSpacefFloor)
-//{
-//	VehicleInfo vehiCall = vehicleMap.get(vehicleNumber);
-//	ParkingInfo parkCall = parkMap.get(avilSpacefFloor);
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		parkCall.setAvailableSpace(parkCall.getAvailableSpace() - 1);
-//		if(parkCall.getAvailableSpace() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor())
-//			{
-//				if(parkCall.getAvailableSpace() == 0)
-//				{
-//					return "No Space Spot";
-//				}
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkCall.setAvailableSpace(2);
-//			
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}
-//	}
-//	else
-//	{
-//		parkCall.setAvailableSpace(parkCall.getAvailableSpace() + 1);
-//	}
-//return parkMap;
-//}
-
-//public Object getCompact(VehicleInfo vehiCall,ParkingInfo parkCall,VehicleType typeCall,int avilSpacefFloor)
-//{
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		typeCall.setCompact(typeCall.getCompact() - 1);
-//		if(typeCall.getCompact() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor() && typeCall.getCompact() == 0)
-//			{
-//				return "No Space for Compact Spot";
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}
-//	}
-//	else
-//	{
-//		typeCall.setCompact(typeCall.getCompact() + 1);
-//	}
-//return parkMap;	
-//}
-//
-//public Object getLarge(VehicleInfo vehiCall,ParkingInfo parkCall,VehicleType typeCall,int avilSpacefFloor)
-//{
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		typeCall.setLarge(typeCall.getLarge() - 1);
-//		if(typeCall.getLarge() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor() && typeCall.getLarge() == 0)
-//			{
-//				return "No Space for Large Spot";
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}
-//	}
-//	else
-//	{
-//		typeCall.setLarge(typeCall.getLarge() + 1);
-//	}
-//return parkMap;	
-//}
-//
-//public Object getHandicapped(VehicleInfo vehiCall,ParkingInfo parkCall,VehicleType typeCall,int avilSpacefFloor)
-//{
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		typeCall.setHandicapped(typeCall.getHandicapped() - 1);
-//		if(typeCall.getHandicapped() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor() && typeCall.getHandicapped() == 0)
-//			{
-//				return "No Space for Handicapped Spot";
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}	
-//	}
-//	else
-//	{
-//		typeCall.setHandicapped(typeCall.getHandicapped() + 1);
-//	}
-//return parkMap;	
-//}
-//
-//public Object getMotorCycle(VehicleInfo vehiCall,ParkingInfo parkCall,VehicleType typeCall,int avilSpacefFloor)
-//{
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		typeCall.setMotorCycle(typeCall.getMotorCycle() - 1);
-//		if(typeCall.getMotorCycle() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor() && typeCall.getMotorCycle() == 0)
-//			{
-//				return "No Space for MotorCycle Spot";
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}
-//	}
-//	else
-//	{
-//		typeCall.setMotorCycle(typeCall.getMotorCycle());
-//	}
-//return parkMap;	
-//}
-//
-//
-//public Object getElectricCar(VehicleInfo vehiCall,ParkingInfo parkCall,VehicleType typeCall,int avilSpacefFloor)
-//{
-//	if(vehiCall.isEntryOrExit() == true)
-//	{
-//		typeCall.setElectricCar(typeCall.getElectricCar() - 1);
-//		if(typeCall.getElectricCar() == 0)
-//		{
-//			if(parkCall.getNofFloors() == parkCall.getAvaiSpaceFloor() && typeCall.getElectricCar() == 0)
-//			{
-//					return "No Space for ElectricCar Spot";
-//			}
-//			parkCall = new ParkingInfo();
-//			parkCall.setNofFloors(5);
-//			parkCall.setAvaiSpaceFloor(avilSpacefFloor+1);
-//			parkMap.put(parkCall.getAvaiSpaceFloor(), parkCall);
-//		}
-//	}
-//	else
-//	{
-//		typeCall.setElectricCar(typeCall.getElectricCar());
-//	}
-//return parkMap;	
-//}
-//
-//public Object checkSpace(int number,VehicleType typeCall,String vehicleNumber,int avilSpacefFloor)
-//{
-//	VehicleInfo vehiCall = vehicleMap.get(vehicleNumber);
-//	ParkingInfo parkCall = parkMap.get(avilSpacefFloor);
-//	Object saved = null;
-//	switch(number)
-//	{
-//		case 1:
-//		{
-//			saved = getCompact(vehiCall, parkCall, typeCall, avilSpacefFloor);
-//			break;
-//		}
-//		case 2:
-//		{
-//			saved = getLarge(vehiCall, parkCall, typeCall, avilSpacefFloor);
-//			break;
-//		}
-//		case 3:
-//		{
-//			saved = getHandicapped(vehiCall, parkCall, typeCall, avilSpacefFloor);
-//			break;
-//		}
-//		case 4:
-//		{
-//			saved = getMotorCycle(vehiCall, parkCall, typeCall, avilSpacefFloor);
-//			break;
-//		}
-//		case 5:
-//		{
-//			saved = getElectricCar(vehiCall, parkCall, typeCall, avilSpacefFloor);
-//			break;
-//		}
-//	}
-//return saved;	
-//}
-//
-//public VehicleInfo showVehicleDetails(String vehicleNumber)
-//{
-//	VehicleInfo vehicall = vehicleMap.get(vehicleNumber);
-//return vehicall;	
-//}
-
 }
