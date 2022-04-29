@@ -4,6 +4,8 @@ public class CustomerInfo {
 	private long portalId;
 	private String name;
 	private double wallet;
+	private String vehicleNumber;
+	private long phoneNumber;
 
 	public long getPortalId() {
 		return portalId;
@@ -28,10 +30,27 @@ public class CustomerInfo {
 	public void setWallet(double wallet) {
 		this.wallet = wallet;
 	}
+	
+	public String getVehicleNumber() {
+		return vehicleNumber;
+	}
+
+	public void setVehicleNumber(String vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+
+	public long getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(long phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
 	@Override
 	public String toString() {
-		return "CustomerInfo [portalId=" + portalId + ", name=" + name + ", wallet=" + wallet + "]";
+		return "CustomerInfo [portalId=" + portalId + ", name=" + name + ", wallet=" + wallet + ", vehicleNumber="
+				+ vehicleNumber + ", phoneNumber=" + phoneNumber + "]";
 	}
 
 }

@@ -7,20 +7,39 @@ public class Controller {
 
 	InputCenter inputCall = new InputCenter();
 	ParkingOperation parkCall = new ParkingOperation();
-	//private int floor = 0;
-	//private int spot = 0;
+	private int floor = 0;
+	// private int spot = 0;
 
-	public void setSpot(int floor, int spot, Spot spotCall) {
+	public void setSpot(int floor,int spot,Spot spotCall) {
+
+//		System.out.println("Please Enter Number Of VehicleType");
+//		int length = inputCall.getInt();
+//		for(int i = 0; i < length; i++)
+//		{
+//			System.out.println("Please Enter VehicleType");
+//			String vehicleType = inputCall.getString();
+//			System.out.println("Please Enter NoOfSpot " + vehicleType);
+//			int numberOfSpot = inputCall.getInt();
+//			System.out.println("Do You Want ChargePort: Yes/No"); 
+//			String check = inputCall.getString();
+//			boolean flag = false;
+//			if(check.equalsIgnoreCase("Yes"))
+//			{
+//				flag = true;
+//			}
+//			parkCall.addSpotDetails(floor, numberOfSpot, vehicleType, spotCall, flag);
+//		}
+		
 		parkCall.addSpotDetails(floor, spot, "Compact", spotCall, false);
 		parkCall.addSpotDetails(floor, spot, "Large", spotCall, false);
 		parkCall.addSpotDetails(floor, spot, "Handicapped", spotCall, false);
 		parkCall.addSpotDetails(floor, spot, "MotorCycle", spotCall, false);
 		parkCall.addSpotDetails(floor, spot, "ElectricCar", spotCall, true);
-		//this.floor = floor;
-		//this.spot = spot;
+		this.floor = floor;
+		// this.spot = spot;
 	}
 
-	public void createCustomerPortal() throws CustomException {
+	public CustomerInfo createCustomerPortal() throws CustomException {
 		CustomerInfo cusCall = new CustomerInfo();
 		System.out.println("Enter Name");
 		cusCall.setName(inputCall.getString());
@@ -29,6 +48,7 @@ public class Controller {
 		cusCall.setWallet(inputCall.getDouble());
 		parkCall.addCustomerPortal(cusCall.getPortalId(), cusCall);
 		System.out.println("Your PortalId: " + cusCall.getPortalId());
+	return cusCall;	
 	}
 
 	public String getVehicleType(int number) throws CustomException {
@@ -71,31 +91,48 @@ public class Controller {
 		tokenCall.setTokenNumber(parkCall.newTokenNumber());
 		System.out.println("Enter VehicleNumber");
 		tokenCall.setVehicleNumber(inputCall.getString());
-		System.out.println(parkCall.checkVehicleNumber(tokenCall.getVehicleNumber()));
+		System.out.println("Enter PhoneNumber");
+		tokenCall.setPhoneNumber(inputCall.getLong());
+		if (floor == 1) {
+			tokenCall.setFloor(1);
+		} else {
+			System.out.println("Enter Floor");
+			tokenCall.setFloor(inputCall.getInt());
+		}
 		System.out.println("Enter VehicleType");
-		System.out.println("1.Compact\n2.Large\n3.Handicapped\n4.MotorCycle\n5.electricCar");
+		System.out.println("1.Compact(Car,Van)\n2.Large(Truck)\n3.Handicapped\n4.MotorCycle\n5.ElectricCar");
 		int number = inputCall.getInt();
 		tokenCall.setVehicleType(getVehicleType(number));
-		//System.out.println(parkCall.checkFloor(floor, spot, tokenCall.getTokenNumber()));
-		System.out.println("Enter Floor");
-		tokenCall.setFloor(inputCall.getInt());
-		// System.out.println(parkCall.getSpot(tokenCall.getFloor(),
-		// tokenCall.getVehicleType()));
+		Object token = parkCall.getVehicleNumber(tokenCall.getVehicleNumber(), tokenCall.getPhoneNumber());
+		System.out.println(parkCall.checkVehicleNumber(tokenCall.getVehicleNumber()));
+		if (token.equals("")) {
+			CustomerInfo cusCall = createCustomerPortal();
+			cusCall.setPhoneNumber(tokenCall.getPhoneNumber());
+			tokenCall.setPortalId(cusCall.getPortalId());
+//			System.out.println("Enter VehicleType");
+//			System.out.println("1.Compact(Car,Van)\n2.Large(Truck)\n3.Handicapped\n4.MotorCycle\n5.ElectricCar");
+//			int number = inputCall.getInt();
+//			tokenCall.setVehicleType(getVehicleType(number));
+			// System.out.println(parkCall.checkFloor(floor, spot,
+			// tokenCall.getTokenNumber()));	
+			// System.out.println(parkCall.getSpot(tokenCall.getFloor(),
+			// tokenCall.getVehicleType()));
+//			System.out.println("You have PortalId:Yes/No");
+//			String saved = inputCall.getString();
+//			if (saved.equalsIgnoreCase("Yes")) {
+//				System.out.println("Enter PortalId");
+//				long portalId = inputCall.getLong();
+//				parkCall.checkPortalId(portalId);
+//				tokenCall.setPortalId(portalId);
+//			} else {
+//				tokenCall.setPortalId(0);
+//			}
+		}
 		parkCall.addTokenDetails(tokenCall.getTokenNumber(), tokenCall);
 		System.out.println(parkCall.checkSpot(tokenCall.getTokenNumber()));
-		System.out.println("You have PortalId:Yes/No");
-		String saved = inputCall.getString();
-		if (saved.equalsIgnoreCase("Yes")) {
-			System.out.println("Enter PortalId");
-			long portalId = inputCall.getLong();
-			parkCall.checkPortalId(portalId);
-			tokenCall.setPortalId(portalId);
-		} else {
-			tokenCall.setPortalId(0);
-		}
 		tokenCall.setEntryTime(parkCall.currentTime());
+		System.out.println("Your Floor: " + tokenCall.getFloor() + " Your Spot: " + tokenCall.getSpot());
 		System.out.println("Your TokenNumber :" + tokenCall.getTokenNumber());
-
 	}
 
 	public void exit() throws CustomException {
@@ -160,32 +197,29 @@ public class Controller {
 		Controller conCall = new Controller();
 		boolean flag = false;
 		Spot spotCall = new Spot();
-		System.out.println("Enter NoOfFloor");
+		System.out.println("Enter Number Of Floor");
 		int floor = inputCall.getInt();
 		System.out.println("Compact\nLarge\nHandicapped\nMotorCycle\nElectricCar");
-		System.out.println("Enter NoOfSpot Each VehicleType");
+		System.out.println("Enter Number Of Spot Each VehicleType");
 		int spot = inputCall.getInt();
-		conCall.setSpot(floor, spot, spotCall);
+		conCall.setSpot(floor,spot,spotCall);
 
 		while (!flag) {
-			System.out.println("-------------0.LogOut--------------------");
+			System.out.println("Please Enter Your Choice");
 			System.out.println("-------------1.Entry Vehicle-------------");
 			System.out.println("-------------2.Exit Vehicle--------------");
 			System.out.println("-------------3.Create CustomerPortal-----");
 			System.out.println("-------------4.CustomerPortalDetails-----");
+			System.out.println("-------------5.LogOut--------------------");
 			int choice = inputCall.getChoice();
 
 			switch (choice) {
-			case 0: {
-				flag = true;
-				break;
-			}
 			case 1: {
 				try {
 					System.out.println("one Hour $4 Fee Two Hour and Three Hour $7.5 Fee Remaining Hour $.10 Fee");
 					conCall.tokenDetails();
 				} catch (CustomException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				break;
 			}
@@ -194,7 +228,7 @@ public class Controller {
 					System.out.println("one Hour $4 Fee Two Hour and Three Hour $7.5 Fee Remaining Hour $.10 Fee");
 					conCall.exit();
 				} catch (CustomException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				break;
 			}
@@ -202,7 +236,7 @@ public class Controller {
 				try {
 					conCall.createCustomerPortal();
 				} catch (CustomException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
 				break;
 			}
@@ -210,8 +244,12 @@ public class Controller {
 				try {
 					conCall.showPortalDetails();
 				} catch (CustomException e) {
-					e.printStackTrace();
+					System.out.println(e.getMessage());
 				}
+				break;
+			}
+			case 5: {
+				flag = true;
 				break;
 			}
 			default: {

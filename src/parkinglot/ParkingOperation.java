@@ -42,6 +42,7 @@ public class ParkingOperation {
 		TokenDetails tokenCall = tokenMap.get(tokenNumber);
 		return tokenCall;
 	}
+	
 
 	public void addCustomerPortal(long portalId, CustomerInfo cusCall) throws CustomException {
 		nullCheckObject(cusCall);
@@ -125,10 +126,10 @@ public class ParkingOperation {
 	}
 
 	public String checkVehicleNumber(String vehicleNumber) throws CustomException {
-		for (long i = tokenNumber; i < i + tokenMap.size(); i++) {
-			TokenDetails tokenCall = tokenMap.get(i - 1);
+		for (long i = tokenNumber; i >= 10000; i--) {
+			TokenDetails tokenCall = tokenMap.get(i);
 			if (tokenCall == null) {
-				return "";
+				continue;
 			}
 			if (tokenCall.getVehicleNumber().equals(vehicleNumber)) {
 				throw new  CustomException("Already Parked");
@@ -136,7 +137,23 @@ public class ParkingOperation {
 		}
 		return "";
 	}
-
+	
+	public Object getVehicleNumber(String vehicleNumber,long phoneNumber) throws CustomException {
+		for (long i = tokenNumber; i < i + tokenMap.size(); i++) {
+			TokenDetails tokenCall = tokenMap.get(i - 1);
+			if (tokenCall == null) {
+				return "";
+			}
+			if (tokenCall.getVehicleNumber().equals(vehicleNumber)) {
+				return tokenCall;
+			}
+			else if (tokenCall.getPhoneNumber() == phoneNumber) {
+				return tokenCall;
+			}
+		}
+		return "";
+	}
+	
 //	for (int i = 0; i < emptySpot.size(); i++) {
 //		Spot spotCall = emptySpot.get(i);
 //		if (amountStatus == false) {
@@ -187,10 +204,10 @@ public class ParkingOperation {
 			throw new  CustomException("Floor " + vehicleType + " SpotOccupied");
 		}
 		spotList.get(0).setTokenNumber(tokenNumber);
-		Spot spotCall = spotList.get(0);
-		spotList.remove(0);	
+		Spot spotCall = spotList.remove(0);	
+		tokenCall.setSpot(spotCall.getSpot());
 		occupiedSpot.put(tokenNumber, spotCall);
-		return "We have Spot " + vehicleType;
+		return "We have Spot For " + vehicleType;
 	}
 
 	public void checkExitSpot(long tokenNumber) {
@@ -200,7 +217,7 @@ public class ParkingOperation {
 		List<Spot> tempList = tempMap.get(tokenCall.getVehicleType());
 			if (spotCall.getTokenNumber() == tokenNumber) {
 				tempList.add(spotCall);
-				tokenMap.remove(tokenNumber);
+				occupiedSpot.remove(tokenNumber);
 		}
 
 	}

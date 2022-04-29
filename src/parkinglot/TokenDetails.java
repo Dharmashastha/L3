@@ -6,7 +6,9 @@ public class TokenDetails {
 	private String vehicleType;
 	private String EntryTime;
 	private int floor;
+	private int spot;
 	private long portalId;
+	private long phoneNumber;
 
 	public long getTokenNumber() {
 		return tokenNumber;
@@ -48,6 +50,14 @@ public class TokenDetails {
 		this.floor = floor;
 	}
 
+	public int getSpot() {
+		return spot;
+	}
+
+	public void setSpot(int spot) {
+		this.spot = spot;
+	}
+
 	public long getPortalId() {
 		return portalId;
 	}
@@ -55,10 +65,19 @@ public class TokenDetails {
 	public void setPortalId(long portalId) {
 		this.portalId = portalId;
 	}
+	
+	public long getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(long phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
 	@Override
 	public String toString() {
 		return "TokenDetails [tokenNumber=" + tokenNumber + ", vehicleNumber=" + vehicleNumber + ", vehicleType="
-				+ vehicleType + ", EntryTime=" + EntryTime + ", floor=" + floor + ", portalId=" + portalId + "]";
+				+ vehicleType + ", EntryTime=" + EntryTime + ", floor=" + floor + ", spot=" + spot + ", portalId="
+				+ portalId + ", phoneNumber=" + phoneNumber + "]";
 	}
 }
