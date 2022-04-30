@@ -104,8 +104,8 @@ public class Controller {
 		int number = inputCall.getInt();
 		tokenCall.setVehicleType(getVehicleType(number));
 		Object token = parkCall.getVehicleNumber(tokenCall.getVehicleNumber(), tokenCall.getPhoneNumber());
-		System.out.println(parkCall.checkVehicleNumber(tokenCall.getVehicleNumber()));
 		if (token.equals("")) {
+			System.out.println(parkCall.checkVehicleNumber(tokenCall.getVehicleNumber()));
 			CustomerInfo cusCall = createCustomerPortal();
 			cusCall.setPhoneNumber(tokenCall.getPhoneNumber());
 			tokenCall.setPortalId(cusCall.getPortalId());
