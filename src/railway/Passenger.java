@@ -7,6 +7,8 @@ public class Passenger {
 	private int age;
 	private String gender;
 	private String berthType;
+	private int seats;
+	private String ticketStatus;
 
 	public long getTicketNumber() {
 		return ticketNumber;
@@ -47,11 +49,27 @@ public class Passenger {
 	public void setBerthType(String berthType) {
 		this.berthType = berthType;
 	}
+	
+	public int getSeats() {
+		return seats;
+	}
+
+	public void setSeats(int seats) {
+		this.seats = seats;
+	}
+	
+	public String getTicketStatus() {
+		return ticketStatus;
+	}
+
+	public void setTicketStatus(String ticketStatus) {
+		this.ticketStatus = ticketStatus;
+	}
 
 	@Override
 	public String toString() {
 		return "Passenger [ticketNumber=" + ticketNumber + ", name=" + name + ", age=" + age + ", gender=" + gender
-				+ ", berthType=" + berthType + "]";
+				+ ", berthType=" + berthType + ", seats=" + seats + ", ticketStatus=" + ticketStatus + "]";
 	}
 
 }
